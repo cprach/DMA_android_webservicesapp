@@ -4,5 +4,9 @@
     <string name="app_name">DMA_android_webservicesapp</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="btn_getForecast">Get Forecast</string>
+    <string name="label_activityTitle">GeoNames: Places Information</string>
+    <string name="label_enterCity">Enter city: </string>
+    <string name="hint_enterCityName">city name </string>
 
 </resources>

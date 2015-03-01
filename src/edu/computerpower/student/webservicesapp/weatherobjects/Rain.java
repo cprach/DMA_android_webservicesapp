@@ -3,11 +3,12 @@ package edu.computerpower.student.webservicesapp.weatherobjects;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 
-@Generated("org.jsonschema2pojo")
+import com.google.gson.annotations.SerializedName;
+
 public class Rain {
 
+	@SerializedName("3h")
     private Integer _3h;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

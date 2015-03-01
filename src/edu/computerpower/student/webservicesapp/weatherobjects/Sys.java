@@ -3,9 +3,7 @@ package edu.computerpower.student.webservicesapp.weatherobjects;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.Generated;
 
-@Generated("org.jsonschema2pojo")
 public class Sys {
 
     private Integer type;

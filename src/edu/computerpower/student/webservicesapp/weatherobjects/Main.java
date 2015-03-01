@@ -4,12 +4,16 @@ package edu.computerpower.student.webservicesapp.weatherobjects;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Main {
 
     private Double temp;
     private Integer humidity;
     private Double pressure;
+    @SerializedName("temp_min")
     private Double tempMin;
+    @SerializedName("temp_max")
     private Double tempMax;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

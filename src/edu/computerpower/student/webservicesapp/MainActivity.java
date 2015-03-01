@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -20,11 +21,15 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+
+import edu.computerpower.student.webservicesapp.weatherobjects.RootObject;
+
 public class MainActivity extends ActionBarActivity {
-	
-	private final static String SERVICE_ADDRESS = "http://api.geonames.org/findNearbyPlaceNameJSON?";
-	private final static String SERVICE_USERNAME = "&username=cprach";
-//	private final static String MELBOURNE_COORDS = "lat=47.3&lng=9";
+
+	//	private final static String SERVICE_ADDRESS = "http://api.geonames.org/findNearbyPlaceNameJSON?";
+	//	private final static String SERVICE_USERNAME = "&username=cprach";
+	//	private final static String MELBOURNE_COORDS = "lat=47.3&lng=9";
 	private final static String MELBOURNE_COORDS = "lat=47.3&lng=9";
 
 	@Override
@@ -51,18 +56,25 @@ public class MainActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	public void GetInfo(View v){
-		String s = "http://openweathermap.org/data/2.5/weather?q=melbourne,AU&units=metric";
-		String serviceURL = SERVICE_ADDRESS + MELBOURNE_COORDS + SERVICE_USERNAME;
-		Log.d(">>>>>>>>>> serviceURL", serviceURL);
-		final ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.prog);
-		progressBar.setVisibility(View.VISIBLE);
-		getInfo gi = new getInfo(progressBar);
-		gi.execute(serviceURL);
-	}
 	
+		TextView txtEnterCityName = (TextView)findViewById(R.id.txtEnterCityName);
+		String cityName = txtEnterCityName.getText().toString();
+
+		if (cityName != "") {
+			final ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.prog);
+			progressBar.setVisibility(View.VISIBLE);
+			getInfo gi = new getInfo(progressBar);
+			gi.execute(txtEnterCityName.getText().toString());
+		}
+	}
+
 	private class getInfo extends AsyncTask<String, Integer, String> {
+
+		private final static String SERVICE_ADDRESS = "http://openweathermap.org/data/2.5/weather?q=";
+		private final static String ADDRESS_END = "&units=metric";
+
 
 		ProgressBar progressBar;
 
@@ -72,18 +84,16 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... values) {
-			super.onProgressUpdate(values);
-			if (this.progressBar != null) {
-				progressBar.setProgress(values[0]);
-			}
-		}
+		protected String doInBackground(String... strings) {
 
-		@Override
-		protected String doInBackground(String... urls) {
+			// "http://openweathermap.org/data/2.5/weather?q=melbourne,AU&units=metric";
+
+			String url = SERVICE_ADDRESS + strings[0] + ADDRESS_END;
+			Log.d("Service url >>> ", url);
+
 			StringBuilder response = new StringBuilder();
 			DefaultHttpClient client = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(urls[0]);
+			HttpGet httpGet = new HttpGet(url);
 			try {
 				HttpResponse execute = client.execute(httpGet);
 				InputStream content = execute.getEntity().getContent();
@@ -102,27 +112,31 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+			if (this.progressBar != null) {
+				progressBar.setProgress(values[0]);
+			}
+		}
+
+		@Override
 		protected void onPostExecute(String result) {
 
+			// 1.
+			TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
+			txtForecast.setText(result);
 
-			try{
-				JSONObject jsonObject = new JSONObject(result);
-				JSONArray arr = new JSONArray(jsonObject.getString("geonames"));
-				Log.d(">>>>>>>>>> length of return array",Integer.toString(arr.length()));
-				for(int a = 0; a<arr.length(); a++){
-					JSONObject element = arr.getJSONObject(a);
-					Toast.makeText(getBaseContext(),
-							element.getString("countryCode")+ ("\n") +
-							element.getString("countryName"),Toast.LENGTH_SHORT).
-							show();
-				}
-				progressBar.setProgress(0);
-				progressBar.setVisibility(-1);
-			}
+			// 2.
+			Gson gson = new Gson();
+			RootObject rootObject = gson.fromJson(result, RootObject.class);
+			String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
+			String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
+			String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
+			String displayString = temp + min_temp + max_temp;
+			txtForecast.setText(displayString);
 
-			catch (Exception e) {
-				e.printStackTrace();
-			}
+
+
 		}
 	}
 

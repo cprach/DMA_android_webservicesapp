@@ -24,10 +24,12 @@
             android:text="@string/label_enterCity"
             android:layout_marginRight="10dp" />
         
-        <EditView
+        <EditText
             android:id="@+id/txtEnterCityName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="text"
             android:hint="@string/label_enterCity" />
         
     </LinearLayout>

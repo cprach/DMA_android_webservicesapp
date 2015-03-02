@@ -4,11 +4,14 @@ package edu.computerpower.student.webservicesapp.weatherobjects;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.annotations.Expose;
+
 public class Weather {
 
     private Integer id;
     private String main;
     private String description;
+    @Expose
     private String icon;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 

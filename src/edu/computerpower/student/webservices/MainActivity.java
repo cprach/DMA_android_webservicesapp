@@ -1,4 +1,4 @@
-package edu.computerpower.student.webservicesapp;
+package edu.computerpower.student.webservices;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.AsyncTask;
@@ -23,6 +23,7 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
+import edu.computerpower.student.webservicesapp.R;
 import edu.computerpower.student.webservicesapp.weatherobjects.RootObject;
 
 public class MainActivity extends ActionBarActivity {

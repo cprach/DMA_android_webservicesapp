@@ -58,7 +58,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void GetInfo(View v){
-	
+
 		TextView txtEnterCityName = (TextView)findViewById(R.id.txtEnterCityName);
 		String cityName = txtEnterCityName.getText().toString();
 
@@ -122,18 +122,22 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		protected void onPostExecute(String result) {
 
-			// 1.
-			TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
-			txtForecast.setText(result);
+			if (result != null | result != "") {
 
-			// 2.
-			Gson gson = new Gson();
-			RootObject rootObject = gson.fromJson(result, RootObject.class);
-			String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
-			String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
-			String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
-			String displayString = temp + min_temp + max_temp;
-			txtForecast.setText(displayString);
+				// 1.
+				TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
+				txtForecast.setText(result);
+
+				// 2.
+//				Gson gson = new Gson();
+//				RootObject rootObject = gson.fromJson(result, RootObject.class);
+//				String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
+//				String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
+//				String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
+//				String displayString = temp + min_temp + max_temp;
+//				txtForecast.setText(displayString);
+
+			}
 
 
 

@@ -8,5 +8,6 @@
     <string name="label_activityTitle">GeoNames: Places Information</string>
     <string name="label_enterCity">Enter city: </string>
     <string name="hint_enterCityName">city name </string>
+    <string name="empty">empty</string>
 
 </resources>

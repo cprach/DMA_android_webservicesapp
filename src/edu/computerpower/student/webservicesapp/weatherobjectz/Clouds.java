@@ -1,33 +1,30 @@
 
-package edu.computerpower.student.webservicesapp.weatherobjects;
+package edu.computerpower.student.webservicesapp.weatherobjectz;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.annotations.SerializedName;
+public class Clouds {
 
-public class Rain {
-
-	@SerializedName("3h")
-    private Integer _3h;
+    private Integer all;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * 
      * @return
-     *     The _3h
+     *     The all
      */
-    public Integer get3h() {
-        return _3h;
+    public Integer getAll() {
+        return all;
     }
 
     /**
      * 
-     * @param _3h
-     *     The 3h
+     * @param all
+     *     The all
      */
-    public void set3h(Integer _3h) {
-        this._3h = _3h;
+    public void setAll(Integer all) {
+        this.all = all;
     }
 
     public Map<String, Object> getAdditionalProperties() {

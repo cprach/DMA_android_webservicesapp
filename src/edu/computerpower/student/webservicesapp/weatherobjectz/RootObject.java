@@ -1,5 +1,5 @@
 
-package edu.computerpower.student.webservicesapp.weatherobjects;
+package edu.computerpower.student.webservicesapp.weatherobjectz;
 
 import java.util.ArrayList;
 import java.util.HashMap;

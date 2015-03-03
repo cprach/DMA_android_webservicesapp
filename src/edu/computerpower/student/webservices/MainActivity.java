@@ -1,37 +1,30 @@
 package edu.computerpower.student.webservices;
 
 import android.support.v7.app.ActionBarActivity;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.google.gson.Gson;
 
 import edu.computerpower.student.webservicesapp.R;
-import edu.computerpower.student.webservicesapp.weatherobjects.RootObject;
+import edu.computerpower.student.webservicesapp.weatherobjectz.RootObject;
 
 public class MainActivity extends ActionBarActivity {
-
-	//	private final static String SERVICE_ADDRESS = "http://api.geonames.org/findNearbyPlaceNameJSON?";
-	//	private final static String SERVICE_USERNAME = "&username=cprach";
-	//	private final static String MELBOURNE_COORDS = "lat=47.3&lng=9";
-	private final static String MELBOURNE_COORDS = "lat=47.3&lng=9";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +38,21 @@ public class MainActivity extends ActionBarActivity {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
+
+	public boolean checkWebConnection() {
+
+		ConnectivityManager mgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo info = mgr.getActiveNetworkInfo();
+
+		if (info.isConnectedOrConnecting()) {
+			if (info.isConnected()) {
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -60,26 +68,42 @@ public class MainActivity extends ActionBarActivity {
 
 	public void GetInfo(View v){
 
-		TextView txtEnterCityName = (TextView)findViewById(R.id.txtEnterCityName);
-		String cityName = txtEnterCityName.getText().toString();
+		boolean val = this.checkWebConnection();
+		
+		if (val == true) {
+			
+			TextView txtEnterCityName = (TextView)findViewById(R.id.txtEnterCityName);
+			String cityName = txtEnterCityName.getText().toString();
 
-		if (cityName != "") {
-			final ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.prog);
-			progressBar.setVisibility(View.VISIBLE);
-			getInfo gi = new getInfo(progressBar);
-			gi.execute(txtEnterCityName.getText().toString());
+			if (cityName != "") {
+				
+				ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.prog);
+				progressBar.setVisibility(View.VISIBLE);
+				
+				ForecastForCityTask forecastTask = new ForecastForCityTask(progressBar);
+				forecastTask.execute(txtEnterCityName.getText().toString());
+				
+			} else {
+				
+				Toast.makeText(this, "Please enter the name of a city", Toast.LENGTH_LONG).show();
+			}
+			
+		} else {
+			
+			Toast.makeText(MainActivity.this, " No Internet Connection, please try again shortly",Toast.LENGTH_LONG).show();
+			
 		}
+
 	}
 
-	private class getInfo extends AsyncTask<String, Integer, String> {
+	private class ForecastForCityTask extends AsyncTask<String, Integer, String> {
 
-		private final static String SERVICE_ADDRESS = "http://openweathermap.org/data/2.5/weather?q=";
-		private final static String ADDRESS_END = "&units=metric";
-
+		private final String SERVICE_ADDRESS_START = "http://openweathermap.org/data/2.5/weather?q=";
+		private final String SERVICE_ADDRESS_END = "&units=metric";
 
 		ProgressBar progressBar;
 
-		public getInfo(ProgressBar progressBar) {
+		public ForecastForCityTask(ProgressBar progressBar) {
 			this.progressBar = progressBar;
 			progressBar.setProgress(0);
 		}
@@ -89,12 +113,11 @@ public class MainActivity extends ActionBarActivity {
 
 			// "http://openweathermap.org/data/2.5/weather?q=melbourne,AU&units=metric";
 
-			String url = SERVICE_ADDRESS + strings[0] + ADDRESS_END;
-			Log.d("Service url >>> ", url);
+			String serviceAddress = SERVICE_ADDRESS_START + strings[0] + SERVICE_ADDRESS_END;
 
 			StringBuilder response = new StringBuilder();
 			DefaultHttpClient client = new DefaultHttpClient();
-			HttpGet httpGet = new HttpGet(url);
+			HttpGet httpGet = new HttpGet(serviceAddress);
 			try {
 				HttpResponse execute = client.execute(httpGet);
 				InputStream content = execute.getEntity().getContent();
@@ -126,17 +149,21 @@ public class MainActivity extends ActionBarActivity {
 			if (result != null | result != "") {
 
 				// 1.
-				TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
-				txtForecast.setText(result);
+				//				TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
+				//				txtForecast.setText(result);
 
 				// 2.
-//				Gson gson = new Gson();
-//				RootObject rootObject = gson.fromJson(result, RootObject.class);
-//				String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
-//				String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
-//				String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
-//				String displayString = temp + min_temp + max_temp;
-//				txtForecast.setText(displayString);
+				TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
+				Gson gson = new Gson();
+				RootObject rootObject = gson.fromJson(result, RootObject.class);
+				String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
+				String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
+				String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
+				String displayString = temp + min_temp + max_temp;
+				txtForecast.setText(displayString);
+
+				progressBar.setProgress(0);
+				progressBar.setVisibility(-1);
 
 			}
 

@@ -1,21 +1,23 @@
 
-package edu.computerpower.student.webservicesapp.weatherobjects;
+package edu.computerpower.student.webservices.weatherobjects;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Main {
 
+    @Expose
     private Double temp;
+    @Expose
     private Integer humidity;
+    @Expose
     private Double pressure;
     @SerializedName("temp_min")
+    @Expose
     private Double tempMin;
     @SerializedName("temp_max")
+    @Expose
     private Double tempMax;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * 
@@ -105,14 +107,6 @@ public class Main {
      */
     public void setTempMax(Double tempMax) {
         this.tempMax = tempMax;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

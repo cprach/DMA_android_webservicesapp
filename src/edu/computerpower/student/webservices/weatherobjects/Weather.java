@@ -1,19 +1,18 @@
 
-package edu.computerpower.student.webservicesapp.weatherobjects;
-
-import java.util.HashMap;
-import java.util.Map;
+package edu.computerpower.student.webservices.weatherobjects;
 
 import com.google.gson.annotations.Expose;
 
 public class Weather {
 
+    @Expose
     private Integer id;
+    @Expose
     private String main;
+    @Expose
     private String description;
     @Expose
     private String icon;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     /**
      * 
@@ -85,14 +84,6 @@ public class Weather {
      */
     public void setIcon(String icon) {
         this.icon = icon;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

@@ -69,29 +69,29 @@ public class MainActivity extends ActionBarActivity {
 	public void GetInfo(View v){
 
 		boolean val = this.checkWebConnection();
-		
+
 		if (val == true) {
-			
+
 			TextView txtEnterCityName = (TextView)findViewById(R.id.txtEnterCityName);
 			String cityName = txtEnterCityName.getText().toString();
 
 			if (cityName != "") {
-				
+
 				ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.prog);
-				progressBar.setVisibility(View.VISIBLE);
-				
+				//				progressBar.setVisibility(View.VISIBLE);
+
 				ForecastForCityTask forecastTask = new ForecastForCityTask(progressBar);
 				forecastTask.execute(txtEnterCityName.getText().toString());
-				
+
 			} else {
-				
+
 				Toast.makeText(this, "Please enter the name of a city", Toast.LENGTH_LONG).show();
 			}
-			
+
 		} else {
-			
+
 			Toast.makeText(MainActivity.this, " No Internet Connection, please try again shortly",Toast.LENGTH_LONG).show();
-			
+
 		}
 
 	}
@@ -109,11 +109,16 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 		@Override
-		protected String doInBackground(String... strings) {
+		protected void onPreExecute() {
+			progressBar.setVisibility(View.VISIBLE);
+		}
+
+		@Override
+		protected String doInBackground(String... params) {
 
 			// "http://openweathermap.org/data/2.5/weather?q=melbourne,AU&units=metric";
 
-			String serviceAddress = SERVICE_ADDRESS_START + strings[0] + SERVICE_ADDRESS_END;
+			String serviceAddress = SERVICE_ADDRESS_START + params[0] + SERVICE_ADDRESS_END;
 
 			StringBuilder response = new StringBuilder();
 			DefaultHttpClient client = new DefaultHttpClient();
@@ -133,43 +138,37 @@ public class MainActivity extends ActionBarActivity {
 				e.printStackTrace();
 			}
 			return response.toString();
+
 		}
 
 		@Override
-		protected void onProgressUpdate(Integer... values) {
-			super.onProgressUpdate(values);
+		protected void onProgressUpdate(Integer... progress) {
+			super.onProgressUpdate(progress);
 			if (this.progressBar != null) {
-				progressBar.setProgress(values[0]);
+				progressBar.setProgress(progress[0]);
 			}
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
 
-			if (result != null | result != "") {
+			TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
+			txtForecast.setText(result);
 
-				// 1.
-				//				TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
-				//				txtForecast.setText(result);
-
-				// 2.
-				TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
-				Gson gson = new Gson();
-				RootObject rootObject = gson.fromJson(result, RootObject.class);
-				String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
-				String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
-				String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
-				String displayString = temp + min_temp + max_temp;
-				txtForecast.setText(displayString);
-
-				progressBar.setProgress(0);
-				progressBar.setVisibility(-1);
-
-			}
-
-
+			progressBar.setProgress(0);
+			progressBar.setVisibility(-1);
 
 		}
 	}
 
 }
+
+
+//TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
+//Gson gson = new Gson();
+//RootObject rootObject = gson.fromJson(result, RootObject.class);
+//String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
+//String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
+//String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
+//String displayString = temp + min_temp + max_temp;
+//txtForecast.setText(displayString);

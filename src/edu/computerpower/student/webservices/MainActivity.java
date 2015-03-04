@@ -77,7 +77,7 @@ public class MainActivity extends ActionBarActivity {
 
 			if (cityName != "") {
 
-				ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.prog);
+				ProgressBar progressBar = (ProgressBar) this.findViewById(R.id.pbProgress);
 				//				progressBar.setVisibility(View.VISIBLE);
 
 				ForecastForCityTask forecastTask = new ForecastForCityTask(progressBar);
@@ -153,8 +153,14 @@ public class MainActivity extends ActionBarActivity {
 		protected void onPostExecute(String result) {
 
 			TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
-			txtForecast.setText(result);
-
+			Gson gson = new Gson();
+			RootObject rootObject = gson.fromJson(result, RootObject.class);
+			String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
+			String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
+			String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
+			String displayString = temp + min_temp + max_temp;
+			txtForecast.setText(displayString);
+			
 			progressBar.setProgress(0);
 			progressBar.setVisibility(-1);
 
@@ -164,11 +170,9 @@ public class MainActivity extends ActionBarActivity {
 }
 
 
+
+
+
+
 //TextView txtForecast = (TextView)findViewById(R.id.txtForecast);
-//Gson gson = new Gson();
-//RootObject rootObject = gson.fromJson(result, RootObject.class);
-//String temp = "Temperature: " + rootObject.getMain().getTemp().toString() + "\n";
-//String min_temp = "Minimum temperature: " + rootObject.getMain().getTempMin().toString() + "\n";
-//String max_temp = "Maximum temperature: " + rootObject.getMain().getTempMax().toString() + "\n";
-//String displayString = temp + min_temp + max_temp;
-//txtForecast.setText(displayString);
+//txtForecast.setText(result);
